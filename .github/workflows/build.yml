@@ -18,10 +18,10 @@ jobs:
 
     - name: Download Toolchains
       run: |
-        # Download GCC
+        # Download GCC 4.9
         git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 toolchain
-        # Download Clang r353911d (clang-4691093 compatibility)
-        git clone --depth=1 https://github.com/LineageOS/android_prebuilts_clang_host_linux-x86_clang-r353911d toolchain-clang
+        # Download Official AOSP Clang
+        git clone --depth=1 https://android.googlesource.com/platform/prebuilts/clang/host/linux-x86 toolchain-clang
 
     - name: Update Makefile Parameters
       run: |
@@ -34,7 +34,7 @@ jobs:
       run: |
         export ARCH=arm64
         export SUBARCH=arm64
-        export CC=$(pwd)/toolchain-clang/bin/clang
+        export CC=$(pwd)/toolchain-clang/clang-r353911d/bin/clang
         export CROSS_COMPILE=$(pwd)/toolchain/bin/aarch64-linux-android-
         export CLANG_TRIPLE=aarch64-linux-gnu-
         
