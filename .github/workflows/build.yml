@@ -25,8 +25,8 @@ jobs:
 
     - name: Update Makefile Parameters
       run: |
-        # Set SUBLEVEL to 157
-        sed -i 's/^SUBLEVEL =.*/SUBLEVEL = 157/' Makefile
+        # Set SUBLEVEL to 186
+        sed -i 's/^SUBLEVEL =.*/SUBLEVEL = 186/' Makefile
         # Set EXTRAVERSION / LOCALVERSION
         sed -i 's/^EXTRAVERSION =.*/EXTRAVERSION = -Sitanshu/' Makefile
 
