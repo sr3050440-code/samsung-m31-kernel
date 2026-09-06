@@ -1,0 +1,44 @@
+name: Build Samsung M31 Kernel
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Kernel Source
+      uses: actions/checkout@v3
+
+    - name: Set up Build Environment
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential bc libncurses5-dev libssl-dev bison flex libelf-dev clang lld git
+
+    - name: Download Toolchain
+      run: |
+        git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 toolchain
+
+    - name: Update Makefile Parameters
+      run: |
+        # Set SUBLEVEL to 157
+        sed -i 's/^SUBLEVEL =.*/SUBLEVEL = 157/' Makefile
+        # Set EXTRAVERSION / LOCALVERSION
+        sed -i 's/^EXTRAVERSION =.*/EXTRAVERSION = -Sitanshu/' Makefile
+
+    - name: Build Kernel
+      run: |
+        export ARCH=arm64
+        export SUBARCH=arm64
+        export CROSS_COMPILE=$(pwd)/toolchain/bin/aarch64-linux-android-
+        
+        make O=out exynos9611-m31_defconfig
+        make -j$(nproc) O=out
+
+    - name: Upload Kernel Image
+      uses: actions/upload-artifact@v3
+      with:
+        name: Samsung-M31-Kernel-Image
+        path: out/arch/arm64/boot/Image.gz-dtb
+        
