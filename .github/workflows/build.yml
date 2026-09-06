@@ -16,9 +16,12 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y build-essential bc libncurses5-dev libssl-dev bison flex libelf-dev clang lld git
 
-    - name: Download Toolchain
+    - name: Download Toolchains
       run: |
+        # Download GCC
         git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9 toolchain
+        # Download Clang r353911d (clang-4691093 compatibility)
+        git clone --depth=1 https://github.com/LineageOS/android_prebuilts_clang_host_linux-x86_clang-r353911d toolchain-clang
 
     - name: Update Makefile Parameters
       run: |
@@ -31,7 +34,9 @@ jobs:
       run: |
         export ARCH=arm64
         export SUBARCH=arm64
+        export CC=$(pwd)/toolchain-clang/bin/clang
         export CROSS_COMPILE=$(pwd)/toolchain/bin/aarch64-linux-android-
+        export CLANG_TRIPLE=aarch64-linux-gnu-
         
         make O=out exynos9610-m31nsxx_defconfig
         make -j$(nproc) O=out
